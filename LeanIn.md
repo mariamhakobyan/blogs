@@ -1,3 +1,7 @@
+The book Lean In: Women, Work, and the Will to Lead, written by Sheryl Sandberg - the Chief Operating Officer of Facebook, is focused on encouraging women to pursue their ambitions, and changing the conversation from what we can’t do to what we can do. Sheryl shares her personal stories, uses research to shine a light on gender differences, and offers practical advice to help women achieve their goals. The book challenges us to change the conversation from what women can’t do to what we can do, and serves as a rallying cry for us to work together to create a more equal world.
+
+In this blog I have tried to highlight the most important and interesting points from the book Lean In.
+
 #### Chapter 1: The Leadership Ambition Gap
 
 #### Chapter 2: Sit at the Table
