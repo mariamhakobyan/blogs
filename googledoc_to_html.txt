@@ -1,0 +1,4 @@
+# Tools For Tumblr Blogs
+
+- stackedit.io => online Markdown editor
+- Pastr Plugin and more => to convert Markdown to HTML
