@@ -163,7 +163,7 @@ Once the plugin is written and packaged, it can easily be added to any Elasticse
  
 Here are the steps necessary to perform to produce messages into Kafka: 
 
-1. Install Kafka (See Apache Kafka Quick Start Guide for instructions on how to Download and Build). We will execute all the steps locally.
+1. Install Kafka (See [Apache Kafka Quick Start Guide](http://kafka.apache.org/07/quickstart.html) for instructions on how to Download and Build). We will execute all the steps locally.
 
 2. First, start a local instance of the zookeeper server: 
     ```java 
