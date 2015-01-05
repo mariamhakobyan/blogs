@@ -162,19 +162,24 @@ There are generally two ways to implement kafka consumer, either using High Leve
 Once the plugin is written and packaged, it can easily be added to any Elasticsearch installation in a single command. But before that, we need to start the Kafka server and produce some messages, so we see them being consumed by the river plugin.
  
 Here are the steps necessary to perform to produce messages into Kafka: 
+
 1. Install Kafka (See Apache Kafka Quick Start Guide for instructions on how to Download and Build). We will execute all the steps locally.
+
 2. First, start a local instance of the zookeeper server: 
     ```java 
     bin/zookeeper-server-start.sh config/zookeeper.properties
     ```
+    
 3. Now start the Kafka server:
     ```java
     bin/kafka-server-start.sh config/server.properties
     ```
+    
 4. Then we need to create a topic called “test”:
     ```java
     bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
     ```
+    
 5. Kafka comes with a command line producer client that will take input from command line and send it out as messages to the Kafka cluster. By default each line will be sent as a separate message. Let’s produce some messages:
     ```java
     bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test 
