@@ -1,13 +1,12 @@
 #Mixing two piece of best technologies - ElasticSearch and Kafka
-----
 
 ##Introduction
 
-###Elasticsearch
+####Elasticsearch
 [ElasticSearch](http://www.elasticsearch.com/) is a highly scalable, distributed, real time search engine with a REST API that is hard not to love. The core of Elasticsearch’s intelligent search engine is largely another software project: Lucene. It is perhaps easiest to understand elasticsearch as a piece of infrastructure built around Lucene’s Java libraries. Elasticsearch itself provides a more useable and concise REST API, scalability, and operational tools on top of Lucene’s search implementation. It also allows you to start with one machine and scale to hundreds, and supports distributed search deployed over Amazon EC2's cloud hosting.
 Plugins in Elasticsearch are a way to enhance the basic elasticsearch functionality in a custom manner. They range from adding custom mapping types, custom analyzers, native scripts, custom discovery and more. There are multiple types of plugins, in this article we will explore the river plugin, which is used to index a stream of data from one source into Elasticsearch. Particularly, we will see how to index stream of data from Kafka into Elasticsearch.
 
-###Kafka
+####Kafka
 [Apache Kafka](http://kafka.apache.org/) is a publish-subscribe messaging system rethought as a distributed commit log. It was originally developed at LinkedIn and later on became a part of Apache project. Kafka is fast - a single Kafka broker can handle hundreds of megabytes of reads and writes per second from thousands of clients. The main reason why it’s so fast is that it uses [Zero Copy](http://en.wikipedia.org/wiki/Zero-copy) and works in a partitioning mechanism. Applications that use zero copy request that the kernel copy the data directly from the disk file to the socket, without going through the application. Zero copy greatly improves application performance and reduces the number of context switches between kernel and user mode. Other advantage is that consumers keep the index of read data, not Kafka itself. It is scalable - can be elastically and transparently expanded without downtime, durable - messages are persisted on disk and replicated within the cluster to prevent data loss, and distributed by design - it has a modern cluster-centric design based on multiple brokers and partitions.
 
 ----
@@ -72,7 +71,7 @@ public class KafkaRiverModule extends AbstractModule {
         bind(River.class).to(KafkaRiver.class).asEagerSingleton();
     }
 }
-``
+```
 
 Now, when we have the plugin setup, it’s time to dig into the actual implementation of our custom logic.
 
@@ -126,7 +125,7 @@ public RiverConfig(RiverName riverName, RiverSettings riverSettings) {
         indexName = riverName.name();
     }
 }
-``
+```
 
 ####Step 5:
 As mentioned earlier, we need to override the start and close methods as well:
@@ -163,25 +162,25 @@ There are generally two ways to implement kafka consumer, either using High Leve
 Once the plugin is written and packaged, it can easily be added to any Elasticsearch installation in a single command. But before that, we need to start the Kafka server and produce some messages, so we see them being consumed by the river plugin.
  
 Here are the steps necessary to perform to produce messages into Kafka: 
-1. Install Kafka (See Apache Kafka Quick Start Guide for instructions on how to Download and Build.). We will execute all the steps locally.
-1. First, start a local instance of the zookeeper server:
-```java
-bin/zookeeper-server-start.sh config/zookeeper.properties
-```
-1. Now start the Kafka server:
-```java
-bin/kafka-server-start.sh config/server.properties
-```
-1. Then we need to create a topic called “test”:
-```java
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
-```
-1. Kafka comes with a command line producer client that will take input from command line and send it out as messages to the Kafka cluster. By default each line will be sent as a separate message. Let’s produce some messages:
-```java
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test 
-This is a message
-This is another message
-``
+1. Install Kafka (See Apache Kafka Quick Start Guide for instructions on how to Download and Build). We will execute all the steps locally.
+2. First, start a local instance of the zookeeper server: 
+    ```java 
+    bin/zookeeper-server-start.sh config/zookeeper.properties
+    ```
+3. Now start the Kafka server:
+    ```java
+    bin/kafka-server-start.sh config/server.properties
+    ```
+4. Then we need to create a topic called “test”:
+    ```java
+    bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+    ```
+5. Kafka comes with a command line producer client that will take input from command line and send it out as messages to the Kafka cluster. By default each line will be sent as a separate message. Let’s produce some messages:
+    ```java
+    bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test 
+    This is a message
+    This is another message
+    ```
 
 If you wanted to make sure that the messages are really being sent to Kafka server, you could also run a command line consumer client, which would receive the messages, but we will not go into details here, because our plugin will consume those messages using Java API.
 
@@ -192,19 +191,19 @@ If you wanted to make sure that the messages are really being sent to Kafka serv
 Now, that we have the messages being produced, we can install the plugin into our Elasticsearch instance. Elasticsearch can be downloaded from [Elasticsearch Download](http://www.elasticsearch.org/download/) page.
 
 1. Install the plugin with a single command:
-```java
-cd ELASTICSEARCH_HOME
-.bin/plugin --install <plugin-name> --url file:////$PLUGIN-PATH/elasticsearch-river-kafka-1.2.1-SNAPSHOT-plugin.zip
-```
-where the <plugin-name> should be the name of the plugin. Note that we use the --url option for the plugin command to get the file locally instead of trying to download it from an online repository, which is another option.
+    ```java
+    cd ELASTICSEARCH_HOME
+    .bin/plugin --install <plugin-name> --url file:////$PLUGIN-PATH/elasticsearch-river-kafka-1.2.1-SNAPSHOT-plugin.zip
+    ```
+    where the <plugin-name> should be the name of the plugin. Note that we use the --url option for the plugin command to get the file locally instead of trying to download it from an online repository, which is another option.
 
-1. We can now start Elasticsearch and see that our plugin gets loaded:
-```java
-~/elasticsearch-1.4.0/bin $ ./elasticsearch
-    [2014-12-27 18:12:47,862][INFO ][node    ] [Mahkizmo] version[1.4.0], pid[9233], build[bc94bd8/2014-11-05T14:26:12Z]
-    [2014-12-27 18:12:47,863][INFO ][node    ] [Mahkizmo] initializing ...
-    [2014-12-27 18:12:47,886][INFO ][plugins ] [Mahkizmo] loaded [river-kafka], sites []
-```
+2. We can now start Elasticsearch and see that our plugin gets loaded:
+    ```java
+    ~/elasticsearch-1.4.0/bin $ ./elasticsearch
+        [2014-12-27 18:12:47,862][INFO ][node    ] [Mahkizmo] version[1.4.0], pid[9233], build[bc94bd8/2014-11-05T14:26:12Z]
+        [2014-12-27 18:12:47,863][INFO ][node    ] [Mahkizmo] initializing ...
+        [2014-12-27 18:12:47,886][INFO ][plugins ] [Mahkizmo] loaded [river-kafka], sites []
+    ```
 
 ----
 
@@ -302,7 +301,7 @@ private void createBulkProcessor(final KafkaConsumer kafkaConsumer) {
             .setConcurrentRequests(riverConfig.getConcurrentRequests())
             .build();
 }
-``
+```
 
 The code above creates the BulkProcessor and configures it to execute the bulk when specified number of documents are ready to be indexed or when 12 hours have passed from the last bulk execution, so any remaining messages get flushed to elasticsearch even if the number of messages has not reached. 
 
@@ -313,9 +312,9 @@ bulkProcessor.add(Requests.indexRequest(riverConfig.getIndexName()).
                         type(riverConfig.getTypeName()).
                         id(UUID.randomUUID().toString()).
                         source(jsonMessageMap));
-``
+```
 
-----
+---
 
 ##Updating the plugin
 
